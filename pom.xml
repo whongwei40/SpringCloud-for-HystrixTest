@@ -11,6 +11,7 @@
         <module>cloud-provider-payment8001</module>
         <module>cloud-api-commons</module>
         <module>cloud-consumer-feign-hystrix-order80</module>
+        <module>cloud-rabbitmq-test</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -31,6 +32,7 @@
     <!-- 子模块继承之后，提供作用：锁定版本+子modlue不用写groupId和version  -->
     <dependencyManagement>
         <dependencies>
+
             <!--spring boot 2.2.2-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
