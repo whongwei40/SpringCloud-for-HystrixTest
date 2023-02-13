@@ -1,13 +1,14 @@
+import entity.option;
+
 import java.util.*;
 
 public class Game {
-    // TODO: 2023/2/13  有可能下两个6，那么中的话，就是倍数*个数 ,目前没有个数
     static Scanner input = new Scanner(System.in);
     static Random random = new Random();
     static ArrayList<String> options = new ArrayList<String>();
     //大小结果映射 小于12是小  大于12是大
     static HashMap<Integer, Integer> integerIntegerHashMap = new HashMap<Integer, Integer>();
-    static ArrayList<String> selectedOptions = new ArrayList<String>();
+    static ArrayList<option> selectedOptions = new ArrayList<option>();
     static double balance = 0.0;
     static double totalEarnings = 0.0;
     static {
@@ -72,7 +73,16 @@ public class Game {
             if (selectedOption.equals("0")) {
                 break;
             } else if (options.contains(selectedOption)) {
-                selectedOptions.add(selectedOption);
+                option option = new option(Integer.valueOf(selectedOption), 0);
+                if (selectedOptions.contains(option)){
+                    selectedOptions.forEach(v->{
+                        if (Objects.equals(v.getName(), Integer.valueOf(selectedOption))) {
+                            v.setCount(v.getCount()+1);
+                        }
+                    });
+                }else {
+                    selectedOptions.add(option);
+                }
                 balance -= 1.0; // 消耗一个金额
                 System.out.println("你目前的下注是");
                 selectedOptions.forEach(System.out::println);
@@ -97,10 +107,12 @@ public class Game {
             System.out.println("你被吃了");
         } else {
             Integer mapResult = integerIntegerHashMap.get(randomOption);
+            option option = new option(mapResult, 0);
             if (randomOption <= 12) {
                 System.out.println("结果是小" + mapResult);
-                if (selectedOptions.contains(String.valueOf(mapResult))) {
-                    double earnings = 8.0; // 小的1-6的收益倍数是8倍
+                if (selectedOptions.contains(option)) {
+                    // 小的1-6的收益倍数是8倍
+                    double earnings = 8.0* Objects.requireNonNull(selectOption(mapResult)).getCount();
                     totalEarnings += earnings;
                     balance += earnings;
                     System.out.println("恭喜你中奖了，收益为：" + earnings);
@@ -109,8 +121,9 @@ public class Game {
                 }
             } else {
                 System.out.println("结果是大" + mapResult);
-                if (selectedOptions.contains(String.valueOf(mapResult))) {
-                    double earnings = 20.0; // 大的1-6的收益倍数是20倍
+                if (selectedOptions.contains(option)) {
+                    // 大的1-6的收益倍数是20倍
+                    double earnings = 20.0* Objects.requireNonNull(selectOption(mapResult)).getCount();
                     totalEarnings += earnings;
                     balance += earnings;
                     System.out.println("恭喜你中奖了，收益为：" + earnings);
@@ -120,6 +133,15 @@ public class Game {
             }
         }
 
+    }
+
+    private static  option selectOption(Integer selectedOption){
+        for (option option : selectedOptions) {
+            if (Objects.equals(option.getName(), selectedOption)) {
+                return option;
+            }
+        }
+        return null;
     }
 
 }
